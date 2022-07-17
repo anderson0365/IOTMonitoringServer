@@ -12,6 +12,12 @@ UNITS = {
     "luminosidad": "lx",
 }
 
+LIMITS = {
+    "temperatura": (19, 22),
+    "humedad": (64, 56),
+    "luminosidad": (200, 400),
+}
+
 
 def get_coordinates(city: str, state: str, country: str) -> Tuple[float, float]:
     '''
@@ -39,6 +45,8 @@ def get_units(variable: str) -> str:
     """
     return UNITS.get(variable, '')
 
+def get_limits(variable: str):
+    return LIMITS.get(variable, (0,0))
 
 def get_topic_data(topic: str) -> Tuple[str, str, str, str]:
     """
@@ -97,12 +105,12 @@ def get_or_create_station(user, location):
     return(station)
 
 
-def get_or_create_measurement(name, unit):
+def get_or_create_measurement(name, unit, limits):
     '''
     Intenta traer la variable con nombre y unidad {name, unit}. Si no existe la crea y la retorna.
     '''
     measurement, created = Measurement.objects.get_or_create(
-        name=name, unit=unit)
+        name=name, unit=unit, max_value=limits[1], min_value =limits[0])
     return measurement
 
 
