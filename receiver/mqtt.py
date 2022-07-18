@@ -25,6 +25,7 @@ def on_message(client: mqtt.Client, userdata, message: mqtt.MQTTMessage):
     '''
     try:
         time = datetime.now()
+        print("Measurment time: " + str(time))
         payload = message.payload.decode("utf-8")
         print("payload: " + payload)
         payloadJson = json.loads(payload)
