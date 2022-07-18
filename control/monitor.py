@@ -34,10 +34,6 @@ def analyze_data():
                 'station__location__state__name',
                 'station__location__country__name')
     
-    me = Measurement.objects.filter(name='luminosidad').first()
-    last_measure = Data.objects.filter(measurement=me.id).latest("base_time")
-    print(f"\n\n\n{last_measure.values[-1]}\n\n\n")
-    
     alerts = 0
     for item in aggregation:
         alert = False
@@ -51,16 +47,22 @@ def analyze_data():
         city = item['station__location__city__name']
         user = item['station__user__username']
 
-        print(f"check value: {user} {variable} {item['check_value']}")
-
-        if item["check_value"] > max_value or item["check_value"] < min_value:
-            alert = True
+        if variable != 'luminosidad':
+            if item["check_value"] > max_value or item["check_value"] < min_value:
+                alert = True
+        else:
+            me = Measurement.objects.filter(name='luminosidad').first()
+            last_measure = Data.objects.filter(measurement=me.id).latest("base_time")[-1]
+            if last_measure > max_value or last_measure < min_value:
+                alert = True
 
         if alert:
             if variable == 'luminosidad':
-                if item["check_value"] > max_value:
+                if last_measure > max_value:
+                    print("--->> Alta luminosidad")
                     message = "ALERT: Alta luminosidad"
-                else: 
+                else:
+                    print("--->> Baja luminosidad")
                     message = "ALERT: Baja luminosidad"
             else:
                 message = "ALERT {} {} {}".format(variable, min_value, max_value)
