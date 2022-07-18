@@ -52,7 +52,7 @@ def analyze_data():
                 alert = True
         else:
             me = Measurement.objects.filter(name='luminosidad').first()
-            last_measure = Data.objects.filter(measurement=me.id).latest("base_time")[-1]
+            last_measure = Data.objects.filter(measurement=me.id).latest("base_time").values[-1]
             if last_measure > max_value or last_measure < min_value:
                 alert = True
 
@@ -73,7 +73,6 @@ def analyze_data():
 
     print(len(aggregation), "dispositivos revisados")
     print(alerts, "alertas enviadas")
-
 
 def on_connect(client, userdata, flags, rc):
     '''
