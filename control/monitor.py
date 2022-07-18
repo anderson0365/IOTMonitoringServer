@@ -15,11 +15,10 @@ def analyze_data():
     # Consulta todos los datos de la última hora, los agrupa por estación y variable
     # Compara el promedio con los valores límite que están en la base de datos para esa variable.
     # Si el promedio se excede de los límites, se envia un mensaje de alerta.
-
-    print("Calculando alertas...")
-
+    basetime = datetime.now()
+    print(f"Calculando alertas...{basetime}")
     data = Data.objects.filter(
-        base_time__gte=datetime.now() - timedelta(minutes=2))
+        base_time__gte=basetime- timedelta(minutes=2))
     aggregation = data.annotate(check_value=Avg('avg_value')) \
         .select_related('station', 'measurement') \
         .select_related('station__user', 'station__location') \
