@@ -18,7 +18,7 @@ def analyze_data():
     basetime = datetime.now()
     print(f"Calculando alertas...{basetime}")
     data = Data.objects.filter(
-        base_time__gte=basetime- timedelta(minutes=10))
+        base_time__gte=basetime- timedelta(hours=1))
     print(len(data))
     aggregation = data.annotate(check_value=Avg('avg_value')) \
         .select_related('station', 'measurement') \
