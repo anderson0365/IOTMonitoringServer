@@ -19,6 +19,7 @@ def analyze_data():
     print(f"Calculando alertas...{basetime}")
     data = Data.objects.filter(
         base_time__gte=basetime- timedelta(minutes=2))
+    print(len(data))
     aggregation = data.annotate(check_value=Avg('avg_value')) \
         .select_related('station', 'measurement') \
         .select_related('station__user', 'station__location') \
@@ -31,6 +32,8 @@ def analyze_data():
                 'station__location__city__name',
                 'station__location__state__name',
                 'station__location__country__name')
+
+    
     alerts = 0
     for item in aggregation:
         alert = False
