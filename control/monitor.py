@@ -16,9 +16,10 @@ def analyze_data():
     # Compara el promedio con los valores límite que están en la base de datos para esa variable.
     # Si el promedio se excede de los límites, se envia un mensaje de alerta.
     basetime = datetime.now()
-    print(f"Calculando alertas...{basetime}")
+    delta_time = basetime- timedelta(minutes=10)
+    print(f"Calculando alertas...{basetime} - {delta_time}")
     data = Data.objects.filter(
-        base_time__gte=basetime- timedelta(hours=1))
+        base_time__gte=delta_time)
     print(len(data))
     aggregation = data.annotate(check_value=Avg('avg_value')) \
         .select_related('station', 'measurement') \
