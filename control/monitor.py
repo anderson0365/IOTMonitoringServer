@@ -1,6 +1,6 @@
 from argparse import ArgumentError
 import ssl
-from django.db.models import Avg
+from django.db.models import Avg, Max
 from datetime import timedelta, datetime
 from receiver.models import Data, Measurement
 import paho.mqtt.client as mqtt
@@ -16,7 +16,7 @@ def analyze_data():
     # Compara el promedio con los valores límite que están en la base de datos para esa variable.
     # Si el promedio se excede de los límites, se envia un mensaje de alerta.
     basetime = datetime.now()
-    delta_time = basetime- timedelta(minutes=10)
+    delta_time = basetime- timedelta(hours=1)
     print(f"Calculando alertas...{basetime} - {delta_time}")
     data = Data.objects.filter(
         base_time__gte=delta_time)
@@ -33,7 +33,9 @@ def analyze_data():
                 'station__location__city__name',
                 'station__location__state__name',
                 'station__location__country__name')
-
+        
+    last_measure = Data.objects.filter(measurement='luminosidad').latest("base_time")
+    print(f"\n\n\n{last_measure.values[-1]}\n\n\n")
     
     alerts = 0
     for item in aggregation:
