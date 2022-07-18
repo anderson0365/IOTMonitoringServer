@@ -33,8 +33,9 @@ def analyze_data():
                 'station__location__city__name',
                 'station__location__state__name',
                 'station__location__country__name')
-        
-    last_measure = Data.objects.filter(measurement='luminosidad').latest("base_time")
+    
+    me = Measurement.objects.filter(name='luminosidad').first()
+    last_measure = Data.objects.filter(measurement=me.id).latest("base_time")
     print(f"\n\n\n{last_measure.values[-1]}\n\n\n")
     
     alerts = 0
